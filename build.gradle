@@ -32,8 +32,8 @@ dependencies {
     compile('org.springframework.boot:spring-boot-starter-web')
     compile('org.projectlombok:lombok:1.16.18')
     compile('org.springframework.boot:spring-boot-starter-data-jpa')
-    compile('mysql:mysql-connector-java')
-//    compile('org.postgresql:postgresql:9.4.1212')
+//    compile('mysql:mysql-connector-java')
+    compile('org.postgresql:postgresql:9.4.1212')
 
     testCompile('org.springframework.boot:spring-boot-starter-test')
 }
