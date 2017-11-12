@@ -29,6 +29,7 @@ public class TrelloClient {
     private TrelloConfig trelloConfig;
 
     private URI buildTrelloURL() {
+
         return UriComponentsBuilder.fromHttpUrl(trelloConfig.getTrelloApiEndpoint() + "/members/" + trelloConfig.getTrelloMember() + "/boards")
                 .queryParam("key", trelloConfig.getTrelloAppKey())
                 .queryParam("token", trelloConfig.getTrelloToken())
