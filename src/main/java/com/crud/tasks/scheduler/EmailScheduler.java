@@ -22,12 +22,12 @@ public class EmailScheduler {
 
     private static final String SUBJECT = "Tasks: Once a day email";
 
-    private String createMessage(long size) {
+    public String createMessage(long size) {
         String message = "Currently in database you got: " + size;
         if (size == 1) {
-            message += " task.";
+            message += " task";
         } else {
-            message += " tasks.";
+            message += " tasks";
         }
         return message;
     }
