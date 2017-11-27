@@ -3,7 +3,6 @@ package com.crud.tasks.trello.mapper;
 import com.crud.tasks.trello.domain.*;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 

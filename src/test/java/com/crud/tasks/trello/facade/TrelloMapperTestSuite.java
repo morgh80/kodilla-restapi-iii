@@ -32,7 +32,13 @@ public class TrelloMapperTestSuite {
 
         //Then
         Assert.assertEquals("1", mappedList.get(0).getId());
+        Assert.assertEquals("board", mappedList.get(0).getName());
+        Assert.assertEquals(trelloListsDto.get(0).getName(), mappedList.get(0).getLists().get(0).getName());
+        Assert.assertEquals(trelloListsDto.get(0).getId(), mappedList.get(0).getLists().get(0).getId());
+        Assert.assertEquals(trelloListsDto.get(0).isClosed(), mappedList.get(0).getLists().get(0).isClosed());
+
     }
+
 
     @Test
     public void shouldReturnTrelloBoardsDto() {
@@ -48,6 +54,11 @@ public class TrelloMapperTestSuite {
 
         //Then
         Assert.assertEquals("2", mappedListDto.get(0).getId());
+        Assert.assertEquals("board", mappedListDto.get(0).getName());
+        Assert.assertEquals(trelloLists.get(0).getId(), mappedListDto.get(0).getLists().get(0).getId());
+        Assert.assertEquals(trelloLists.get(0).getName(),  mappedListDto.get(0).getLists().get(0).getName());
+        Assert.assertEquals(trelloLists.get(0).isClosed(),  mappedListDto.get(0).getLists().get(0).isClosed());
+
     }
 
     @Test
@@ -79,7 +90,11 @@ public class TrelloMapperTestSuite {
         TrelloCardDto mappedCardDto = trelloMapper.mapToCardDto(trelloCard);
 
         // Then
+        Assert.assertEquals("Task", mappedCardDto.getName());
+        Assert.assertEquals("Description", mappedCardDto.getDescription());
+        Assert.assertEquals("top", mappedCardDto.getPos());
         Assert.assertEquals("4", mappedCardDto.getListId());
+
     }
 
 }
