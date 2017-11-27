@@ -16,6 +16,7 @@ import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.mail.SimpleMailMessage;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.when;
 
@@ -41,26 +42,14 @@ public class TrelloServiceTest {
         TrelloCardDto trelloCardDto = new TrelloCardDto("Card", "Some card", "top", "1");
         CreatedTrelloCardDto createdTrelloCardDto = new CreatedTrelloCardDto("1", "Card", "http://test.com");
 
-
-
         when(adminConfig.getAdminMail()).thenReturn("test@admin.pl");
-        Mail mail = new Mail(adminConfig.getAdminMail(), "Test", "Test message");
-
-        SimpleMailMessage mailMessage = new SimpleMailMessage();
-
-        mailMessage.setTo(mail.getMailTo());
-        mailMessage.setSubject(mail.getSubject());
-        mailMessage.setText(mail.getMessage());
         when(trelloClient.createTrelloCard(trelloCardDto)).thenReturn(createdTrelloCardDto);
-//        when(trelloClient.createTrelloCard(trelloCardDto)).then();
+
         //When
         trelloService.createTrelloCard(trelloCardDto);
 
         //Then
-        Mockito.verify(emailService, times(1)).send(mail);
-
-
-
+        Mockito.verify(emailService, times(1)).send(any());
 
     }
 
