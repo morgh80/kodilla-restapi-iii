@@ -45,5 +45,8 @@ dependencies {
     //Gson
     compile('com.google.code.gson:gson:2.8.2')
 
+    //Actuator
+    compile('org.springframework.boot:spring-boot-starter-actuator')
+
     testCompile('org.springframework.boot:spring-boot-starter-test')
 }
