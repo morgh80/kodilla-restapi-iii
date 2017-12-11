@@ -5,9 +5,9 @@ import com.crud.tasks.domain.TaskDto;
 import com.crud.tasks.mapper.TaskMapper;
 import com.crud.tasks.service.DbService;
 import com.google.gson.Gson;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.ArgumentMatchers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -21,11 +21,10 @@ import java.util.Optional;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
@@ -35,9 +34,6 @@ public class TaskControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
-
-    @Autowired
-    private TaskController taskController;
 
     @MockBean
     private DbService service;
@@ -89,34 +85,60 @@ public class TaskControllerTest {
                 .andExpect(jsonPath("$.content", is("Some content")));
     }
 
+
+    @Test
+    public void shouldDeleteTask() throws Exception {
+        //When & Then
+        mockMvc.perform(delete("/v1/task/{taskId}", 1)).andExpect(status().isOk());
+        Assert.assertEquals(Optional.empty(), service.getTask((long) 1));
+        verify(service, times(1)).deleteTask((long) 1);
+    }
+
+
+    @Test
+    public void shouldUpdateTask() throws Exception {
+        //Given
+        TaskDto taskDto = new TaskDto((long) 1, "Some task", "Some content");
+        Task task = new Task((long) 1, "Some task", "Some content");
+
+        when(taskMapper.mapToTaskDto(service.saveTask(taskMapper.mapToTask(taskDto)))).thenReturn(taskDto);
+
+        Gson gson = new Gson();
+        String jsonContent = gson.toJson(task);
+
+        //When & Then
+        mockMvc.perform(put("/v1/task/updateTask").contentType(MediaType.APPLICATION_JSON)
+                .characterEncoding("UTF-8")
+                .content(jsonContent))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id", is(1)))
+                .andExpect(jsonPath("$.title", is("Some task")))
+                .andExpect(jsonPath("$.content", is("Some content")));
+    }
+
+
     @Test
     public void shouldCreateTask() throws Exception {
         //Given
         TaskDto taskDto = new TaskDto((long) 1, "Some task", "Some content");
         Task task = new Task((long) 1, "Some task", "Some content");
 
-        when(taskMapper.mapToTask(taskDto)).thenReturn(task);
-
-        when(service.saveTask(any(Task.class))).thenReturn(task);
-
-        taskController.createTask(taskDto);
-
+        when(taskMapper.mapToTaskDto(service.saveTask(taskMapper.mapToTask(taskDto)))).thenReturn(taskDto);
 
         Gson gson = new Gson();
         String jsonContent = gson.toJson(taskDto);
 
-
+        //When & Then
         mockMvc.perform(post("/v1/task/createTask")
                 .contentType(MediaType.APPLICATION_JSON)
                 .characterEncoding("UTF-8")
-                .content(jsonContent))
+                .content(jsonContent)
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id", is(1)))
                 .andExpect(jsonPath("$.title", is("Some task")))
                 .andExpect(jsonPath("$.content", is("Some content")));
-
-
-
-
     }
+
 }
 
