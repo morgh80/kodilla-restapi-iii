@@ -25,11 +25,22 @@ public class SimpleEmailService {
     public void send(final Mail mail) {
         LOGGER.info("Starting email preparation...");
         try {
-            SimpleMailMessage mailMessage = createMailMessage(mail);
+//            SimpleMailMessage mailMessage = createMailMessage(mail);
             javaMailSender.send(createMimeMessage(mail));
             LOGGER.info("Email has been sent");
         } catch (MailException e) {
             LOGGER.error("Failed to process email sending: ", e.getMessage(), e);
+        }
+    }
+
+
+    public void sendHtmlEmail(final Mail mail) {
+        LOGGER.info("Starting HTML email preparation...");
+        try {
+            javaMailSender.send(createScheduledMimeMessage(mail));
+            LOGGER.info("HTML email has been sent");
+        } catch (MailException e) {
+            LOGGER.error("Failed to process HTML email sending: ", e.getMessage(), e);
         }
     }
 
@@ -39,6 +50,15 @@ public class SimpleEmailService {
             messageHelper.setTo(mail.getMailTo());
             messageHelper.setSubject(mail.getSubject());
             messageHelper.setText(mailCreatorService.buildTrelloCardEmail(mail.getMessage()),true);
+        };
+    }
+
+    public MimeMessagePreparator createScheduledMimeMessage(final Mail mail) {
+        return mimeMessage -> {
+            MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage);
+            messageHelper.setTo(mail.getMailTo());
+            messageHelper.setSubject(mail.getSubject());
+            messageHelper.setText(mailCreatorService.buildTaksNewsletter(),true);
         };
     }
 
